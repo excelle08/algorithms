@@ -15,6 +15,14 @@ void current_utc_time(struct timespec *ts) {
 #endif
 }
 
+static inline void unify_timedelta(struct timespec *ts)
+{
+    if (ts->tv_nsec < 0) {
+        ts->tv_sec -= 1;
+        ts->tv_nsec = 1000000000L + ts->tv_nsec;
+    }
+}
+
 struct timespec benchmark(int (*func)(void *), void *arg) {
     struct timespec diff, start, end;
     int retval;
@@ -24,6 +32,7 @@ struct timespec benchmark(int (*func)(void *), void *arg) {
     current_utc_time(&end);
     diff.tv_sec = end.tv_sec - start.tv_sec;
     diff.tv_nsec = end.tv_nsec - start.tv_nsec;
+    unify_timedelta(&diff);
 
     if (retval != 0) {
         printf("%s: warning: target returned %d.\n", __func__, retval);
@@ -48,5 +57,6 @@ struct timespec benchmark_mt(int (*func)(void *), void *arg, unsigned int times)
     current_utc_time(&end);
     diff.tv_sec = end.tv_sec - start.tv_sec;
     diff.tv_nsec = end.tv_nsec - start.tv_nsec;
+    unify_timedelta(&diff);
     return diff;
 }

@@ -1,9 +1,9 @@
 BASE := $(PWD)
 export INC := $(BASE)/include/
 
-export COMMON := $(BASE)/common/*.c
+export COMMON := $(wildcard $(BASE)/common/*.c)
 
-export override CPPFLAGS += -Wall -Werror -I$(INC)
+export override CPPFLAGS += -O2 -Wall -Werror -I$(INC)
 
 SUBDIRS := $(wildcard */.)
 SUBDIRS := $(filter-out include/., $(SUBDIRS))
