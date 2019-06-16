@@ -48,17 +48,17 @@ int heap_expand(struct heap *this);
  * Other utilities
  */
 
-inline unsigned int heap_left_idx(unsigned int i)
+static inline unsigned int heap_left_idx(unsigned int i)
 {
     return (2 * i + 1);
 }
 
-inline unsigned int heap_right_idx(unsigned int i)
+static inline unsigned int heap_right_idx(unsigned int i)
 {
     return (2 * i + 2);
 }
 
-inline unsigned int heap_parent_idx(unsigned int i)
+static inline unsigned int heap_parent_idx(unsigned int i)
 {
     if (i == 0) {
         return 0;
@@ -66,7 +66,7 @@ inline unsigned int heap_parent_idx(unsigned int i)
     return (i - 1) / 2;
 }
 
-inline void swap(struct node *a, struct node *b)
+static inline void swap(struct node *a, struct node *b)
 {
     struct node tmp;
     tmp = *a;

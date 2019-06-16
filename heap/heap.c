@@ -8,11 +8,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+struct heap_operations heap_ops = {
+    .add = heap_add,
+    .peek = heap_peek,
+    .pop = heap_pop,
+    .index = heap_index,
+    .find_at = heap_find_at,
+    .remove = heap_remove,
+    .contains = heap_contains,
+    .__expand = heap_expand
+};
+
 struct heap * heap_init(unsigned int initial_cap,
         int (*comparator)(struct node a, struct node b))
 {
     struct heap *h = NULL;
-    struct heap_operations *h_ops = NULL;
     struct node *arr = NULL;
     initial_cap = (initial_cap > HEAP_MIN_CAP) ? initial_cap : HEAP_MIN_CAP;
     h = malloc(sizeof(struct heap));
@@ -20,14 +30,8 @@ struct heap * heap_init(unsigned int initial_cap,
         // Out of memory?
         return NULL;
     }
-    h_ops = malloc(sizeof(struct heap_operations));
-    if (!h_ops) {
-        free(h);
-        return NULL;
-    }
     arr = malloc(initial_cap * sizeof(struct node));
     if (!arr) {
-        free(h_ops);
         free(h);
         return NULL;
     }
@@ -42,15 +46,7 @@ struct heap * heap_init(unsigned int initial_cap,
     }
 
     // 2. Assemble operations
-    h_ops->add = heap_add;
-    h_ops->peek = heap_peek;
-    h_ops->pop = heap_pop;
-    h_ops->index = heap_index;
-    h_ops->find_at = heap_find_at;
-    h_ops->remove = heap_remove;
-    h_ops->contains = heap_contains;
-    h_ops->__expand = heap_expand;
-    h->h_op = h_ops;
+    h->h_op = &heap_ops;
 
     // 3. Put values
     h->h_size = 0;
@@ -64,7 +60,6 @@ void heap_destroy(struct heap *h)
 {
     h->h_capacity = 0;
     h->h_size = 0;
-    free(h->h_op);
     free(h->h_arr);
     free(h);
 }
